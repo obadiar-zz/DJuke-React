@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, AsyncStorage } from 'react-native';
 import { ExpoLinksView } from '@expo/samples';
 import SearchBar from '../components/SearchBar';
 import SongList from '../components/SongList';
@@ -20,6 +20,7 @@ export default class SearchScreen extends React.Component {
     this.spotifySearch = this.spotifySearch.bind(this);
     this.soundcloudSearch = this.soundcloudSearch.bind(this);
     this.submitSongQueue = this.submitSongQueue.bind(this);
+    console.log("thisprops", props);
     fetch("https://rocky-brook-68243.herokuapp.com/discover")
     .then((response) => {
       console.log("response", response);
@@ -34,7 +35,7 @@ export default class SearchScreen extends React.Component {
     const query = encodeURIComponent(term);
     fetch('https://api.spotify.com/v1/search?q=' + query + '&type=track,artist&market=US', {
       headers: {
-          "Authorization": "Bearer BQDsQEto9m7uKKoawN3_aTZEvw2Qdb1FKPPdjPEfRQ7skyLiLPQvQNVH_hgkdEIUpBSnxLe-R1QHNdop7e8A_XgHNMnMNvdbTy3zssisBXybe-WJBcE9okOsn21_VHOcvqrh56iljVBry6swvx2S70bX-p01TAEo1PUBlF-tvnq2E71GOKQVXOjHFVs7ae8f9IJjQaxpyUu_koe3E4FvcGgRLE2oz8XT2cCmA0doEk3I6Op1ZHlbm9qDHedE-tY3qSUC98Isvgx5EBZUQHMIOOSlNv0loEczjaHbki8pUW6oeoVcps3ZVv6-UNjJlW-3N4F6oD6YbM57laKUMun6HEA6gg"
+          "Authorization": "Bearer BQBjjbs39kill1ROio_-1vmFdJmXs55yOsWF6-xp0iQDBwh7WLse74C9HdXHaqXTA_5zMoGkZam1NdfXPcqcRL-f1JGGSNgVVJPBCZuY_C5UhgDBN8AK6VvxljLtuwi-Xlwk1YHJlIaL_dZpgA0ivjnMFeA177B_TosCxbOGME2VYr-K5EdT47PPGpUE4q5i0JXVBy5wTqOkY7Tmz7H9irtRSkAaNsZeoU2FeGXNunIHiS8sVlqmHEATf_fMO-aFY3vJLK0MVuCNGFf4F-PB4PGZdVGNbW3LXqDKLDjElcYdrR0XQHP2gM8zrdtW7qu5e3zbR5rui7gT0EoB46LA-HZpOA"
       }
     }).then((response) => response.json())
     .then((responseJSON) => {
@@ -58,11 +59,22 @@ export default class SearchScreen extends React.Component {
   submitSongQueue(songObj) {
     this.state.socket.emit('ADD_SONG', songObj);
   }
+
+
+  // saveSongAsync(song) {
+  //   AsyncStorage.getItem('previousPlayed')
+  //   .then((arrayList) => {
+  //     const newArrayList = [...arrayList, song];
+  //     AsyncStorage.setItem('previousPlayed', JSON.stringify(newArrayList));
+  //   })
+  //
+  // }
+
   render() {
     return (
       <ScrollView style={styles.container}>
         <SearchBar soundcloudSearch={this.soundcloudSearch} spotifySearch={this.spotifySearch}/>
-        <SongList submitSongQueue={this.submitSongQueue} usedAPI={this.state.usedAPI} songs={this.state.songs} />
+        <SongList  submitSongQueue={this.submitSongQueue} usedAPI={this.state.usedAPI} songs={this.state.songs} />
       </ScrollView>
     );
   }

@@ -34,8 +34,7 @@ export default class HomeScreen extends React.Component {
             this.state.socket.emit('CONNECT');
             this.state.socket.on('QUEUE_UPDATED', (data) => {
               console.log("all data", data);
-              console.log('data1', data.list.slice(1, data.list.length - 1));
-              this.setState({currentlyPlaying: data.list[data.list.length - 1], queue: data.list.slice(1, data.list.length - 1)});
+              this.setState({currentlyPlaying: data.list[data.list.length - 1], queue: data.list});
 
             })
         });
@@ -59,9 +58,10 @@ export default class HomeScreen extends React.Component {
           contentContainerStyle={styles.contentContainer}>
           <View style={styles.welcomeContainer}>
             <Image
+
               source={
                 __DEV__
-                  ? require('../assets/images/robot-dev.png')
+                  ? require('../assets/images/djuke-logo.png')
                   : require('../assets/images/robot-prod.png')
               }
               style={styles.welcomeImage}
@@ -69,8 +69,7 @@ export default class HomeScreen extends React.Component {
           </View>
 
           <View style={styles.getStartedContainer}>
-            <Text style={styles.getStartedText}>Add to the queue by searching for songs</Text>
-            {this.state.currentlyPlaying ? <QueueList submitAddBid={this.submitAddBid} submitUpvote={this.submitUpvote} currentlyPlaying={this.state.currentlyPlaying} queue={this.state.queue}/> : <Text> Loading... </Text>}
+            {this.state.server ? this.state.currentlyPlaying ? <QueueList submitAddBid={this.submitAddBid} submitUpvote={this.submitUpvote} currentlyPlaying={this.state.currentlyPlaying} queue={this.state.queue}/> : <Text style={styles.getStartedText}> You have connected to a DJuke! The playlist is empty so add to it to start the fun. </Text> : <Text style={{marginTop: 20, color: 'white'}}> Connecting... </Text>}
 
 
 
@@ -101,7 +100,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   contentContainer: {
-    paddingTop: 30,
+    paddingTop: 20,
   },
   welcomeContainer: {
     alignItems: 'center',
@@ -109,8 +108,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   welcomeImage: {
-    width: 100,
-    height: 80,
+    width: 250,
+    height: 200,
     resizeMode: 'contain',
     marginTop: 3,
     marginLeft: -10,
@@ -118,6 +117,7 @@ const styles = StyleSheet.create({
   getStartedContainer: {
     alignItems: 'center',
     marginHorizontal: 50,
+    marginTop: -30
   },
   homeScreenFilename: {
     marginVertical: 7,
@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
     color: 'white',
     lineHeight: 24,
     textAlign: 'center',
+    marginTop: -30
   },
   tabBarInfoContainer: {
     position: 'absolute',

@@ -15,7 +15,7 @@ import QueueItem from './QueueItem';
 export default class QueueList extends React.Component {
   constructor(props) {
     super(props);
-    console.log("PROPS", props.currentlyPlaying);
+    console.log("PROPS", props);
     this.state= {
       queue: this.props.queue,
       currentlyPlaying: this.props.currentlyPlaying,
@@ -50,7 +50,9 @@ export default class QueueList extends React.Component {
   }
   render() {
     const percentage = this.state.currentTimeStamp/(parseInt(this.state.currentlyPlaying.durationS));
+
     const queueItems = this.state.queue.map((song) => {
+      console.log("song", song);
       return(
         <QueueItem submitAddBid={this.props.submitAddBid} submitUpvote={this.props.submitUpvote} song={song} />
       );

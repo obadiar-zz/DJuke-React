@@ -33,7 +33,7 @@ export default class AddQueueItem extends React.Component {
     this.setState({modalVisible: true, clickedItem: id});
   }
   render() {
-    const {songImage,title, artist, id, duration, submitSongQueue} = this.props;
+    const {songImage,title, artist, id, duration, submitSongQueue, saveSongAsync} = this.props;
     const minutes = Math.floor(duration / 60000);
     const seconds = ((duration % 60000) / 1000).toFixed(0);
     return(
@@ -56,6 +56,7 @@ export default class AddQueueItem extends React.Component {
 
              <TouchableOpacity style={{marginTop: 15}} onPress={() => {
                this.setState({modalVisible: !this.state.modalVisible});
+
                  submitSongQueue({
                    id,
                    payment: parseInt(this.state.bid),

@@ -26,7 +26,6 @@ export default class QueueItem extends React.Component {
   render() {
     const {thumbnail, id, artist, duration, payment, title, upvotes} = this.props.song;
     const {submitUpvote, submitAddBid} = this.props;
-    console.log("what");
     return (
       <View style={{borderTopWidth: 2, borderBottomWidth: 2, borderLeftWidth: 0, borderRightWidth: 0, borderColor: 'white'}}>
       <Modal
