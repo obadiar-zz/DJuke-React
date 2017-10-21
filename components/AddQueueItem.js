@@ -13,6 +13,8 @@ import {
 } from 'react-native';
 
 import { Octicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { NativeModules } from 'react-native';
+const { RNNetworkInfo } = NativeModules;
 
 export default class AddQueueItem extends React.Component {
   constructor(props) {
@@ -23,6 +25,7 @@ export default class AddQueueItem extends React.Component {
       modalVisible: false
     }
     this.handleClick = this.handleClick.bind(this);
+
   }
 
 
@@ -30,8 +33,7 @@ export default class AddQueueItem extends React.Component {
     this.setState({modalVisible: true, clickedItem: id});
   }
   render() {
-    const {songImage,title, artist, id, duration } = this.props;
-    console.log("check", songImage, title, artist, id, duration);
+    const {songImage,title, artist, id, duration, submitSongQueue} = this.props;
     const minutes = Math.floor(duration / 60000);
     const seconds = ((duration % 60000) / 1000).toFixed(0);
     return(
@@ -53,7 +55,13 @@ export default class AddQueueItem extends React.Component {
              />
 
              <TouchableOpacity style={{marginTop: 15}} onPress={() => {
-               this.setState({modalVisible: !this.state.modalVisible})
+               this.setState({modalVisible: !this.state.modalVisible});
+                 submitSongQueue({
+                   id,
+                   payment: parseInt(this.state.bid),
+                   type: this.props.usedAPI
+                 })
+
              }}>
                <Text style={{color: 'blue'}}>Submit</Text>
              </TouchableOpacity>

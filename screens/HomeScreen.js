@@ -9,9 +9,9 @@ import {
   View,
 } from 'react-native';
 import { WebBrowser } from 'expo';
-
+import QueueList from '../components/QueueList';
 import { MonoText } from '../components/StyledText';
-
+const io = require('socket.io-client');
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
     header: null,
@@ -20,16 +20,25 @@ export default class HomeScreen extends React.Component {
     super(props);
     this.state = {
       server: '',
-      queue: []
+      queue: [],
+      socket: io(),
+      currentlyPlaying: false
     }
     fetch("https://rocky-brook-68243.herokuapp.com/discover")
     .then((response) => {
       console.log("response", response);
       if(response._bodyText) {
-        this.setState({server: response._bodyText});
+        this.setState({server: response._bodyText, socket: io('http://' + response._bodyText +':8228')}, () => {
+            this.state.socket.emit('CONNECT');
+            this.state.socket.on('QUEUE_UPDATED', (data) => {
+              this.setState({currentlyPlaying: data.list[0], queue: data.list.slice(1)});
+            })
+        });
       }
     })
   }
+
+
   render() {
     return (
       <View style={styles.container}>
@@ -48,8 +57,9 @@ export default class HomeScreen extends React.Component {
           </View>
 
           <View style={styles.getStartedContainer}>
+            <Text style={styles.getStartedText}>Add to the queue by searching for songs</Text>
+            {this.state.currentlyPlaying ? <QueueList currentlyPlaying={this.state.currentlyPlaying} queue={this.state.queue}/> : <Text> Loading... </Text>}
 
-            <Text style={styles.getStartedText}>Get started by opening</Text>
 
 
           </View>
@@ -109,7 +119,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   getStartedText: {
-    fontSize: 17,
+    fontSize: 16,
     color: 'white',
     lineHeight: 24,
     textAlign: 'center',
