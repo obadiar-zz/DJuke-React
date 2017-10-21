@@ -21,7 +21,6 @@ const SongList = ({songs, usedAPI, submitSongQueue}) => {
       )
     }
     if(usedAPI === 'soundcloud') {
-      console.log("WATHT HE FUCK", song);
       return (
         <AddQueueItem usedAPI={usedAPI} submitSongQueue={submitSongQueue} songImage={song.artwork_url} artist={song.user.username} title={song.title} duration={song.duration} id={song.id}/>
       )

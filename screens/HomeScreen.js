@@ -24,6 +24,8 @@ export default class HomeScreen extends React.Component {
       socket: io(),
       currentlyPlaying: false
     }
+    this.submitUpvote = this.submitUpvote.bind(this);
+    this.submitAddBid = this.submitAddBid.bind(this);
     fetch("https://rocky-brook-68243.herokuapp.com/discover")
     .then((response) => {
       console.log("response", response);
@@ -31,15 +33,25 @@ export default class HomeScreen extends React.Component {
         this.setState({server: response._bodyText, socket: io('http://' + response._bodyText +':8228')}, () => {
             this.state.socket.emit('CONNECT');
             this.state.socket.on('QUEUE_UPDATED', (data) => {
-              this.setState({currentlyPlaying: data.list[0], queue: data.list.slice(1)});
+              console.log("all data", data);
+              console.log('data1', data.list.slice(1, data.list.length - 1));
+              this.setState({currentlyPlaying: data.list[data.list.length - 1], queue: data.list.slice(1, data.list.length - 1)});
+
             })
         });
       }
     })
   }
 
+  submitUpvote(id) {
+    this.state.socket.emit('UPVOTE_SONG', {id})
+  }
 
+  submitAddBid(amount, id) {
+    this.state.socket.emit('PAY_SONG', {amount, id})
+  }
   render() {
+    console.log("RERENDER", this.state);
     return (
       <View style={styles.container}>
         <ScrollView
@@ -58,7 +70,7 @@ export default class HomeScreen extends React.Component {
 
           <View style={styles.getStartedContainer}>
             <Text style={styles.getStartedText}>Add to the queue by searching for songs</Text>
-            {this.state.currentlyPlaying ? <QueueList currentlyPlaying={this.state.currentlyPlaying} queue={this.state.queue}/> : <Text> Loading... </Text>}
+            {this.state.currentlyPlaying ? <QueueList submitAddBid={this.submitAddBid} submitUpvote={this.submitUpvote} currentlyPlaying={this.state.currentlyPlaying} queue={this.state.queue}/> : <Text> Loading... </Text>}
 
 
 

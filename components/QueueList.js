@@ -34,9 +34,12 @@ export default class QueueList extends React.Component {
     let minutes = Math.floor(this.state.currentlyPlaying.durationS / 60);
     let seconds = Math.floor(this.state.currentlyPlaying.durationS - minutes * 60) - 1;
     if(seconds < 10){
+      if(seconds > 0) {
+        seconds = '0' + seconds;
+      }
 
-      seconds = '0' + seconds;
       if(seconds < 0) {
+        console.log("hello");
         minutes = minutes -1;
         seconds = 59;
       }
@@ -48,12 +51,13 @@ export default class QueueList extends React.Component {
   render() {
     const percentage = this.state.currentTimeStamp/(parseInt(this.state.currentlyPlaying.durationS));
     const queueItems = this.state.queue.map((song) => {
-      <QueueItem song={song} />
+      return(
+        <QueueItem submitAddBid={this.props.submitAddBid} submitUpvote={this.props.submitUpvote} song={song} />
+      );
     })
-    console.log("queueItems", queueItems);
     return(
-      <ScrollView style={{flex: 1}}>
-          <View style={{flex: 1, marginTop:15, alignItems: 'center'}}>
+      <View style={{marginBottom: 30}}>
+          <View style={{marginTop:15, justifyContent: 'center', alignItems: 'center'}}>
             {this.state.currentlyPlaying.thumbnail ? <Image
               style={{width: 150, height: 150, borderRadius: 75}}
               source={{uri: this.state.currentlyPlaying.thumbnail}}
@@ -62,19 +66,19 @@ export default class QueueList extends React.Component {
               style={{width: 150, height: 150, borderRadius: 75}}
               source={require('../assets/images/robot-dev.png')}
             /> }
-            <View>
+            <View style={{ marginTop: 10, justifyContent: 'center'}}>
               <Text style={{color: 'white', fontSize: 20, textAlign:'center'}}>{this.state.currentlyPlaying.title} - {this.state.currentlyPlaying.artist}</Text>
-              <View style={{flex: 1, flexDirection: 'row', marginTop: 10}}>
-                <Progress.Bar progress={percentage} width={200} height={16} color="white" borderWidth={0} unfilledColor="grey" borderRadius={0} />
-                <Text style={{color: 'white', marginLeft: 10}}>{this.state.timeLeft}</Text>
+              <View style={{ marginTop: 10, justifyContent: 'center'}}>
+                <Progress.Bar progress={percentage} width={350} height={16} color="white" borderWidth={0} unfilledColor="grey" borderRadius={2} />
+                <Text style={{color: 'white', marginLeft: 10, textAlign:'center', marginTop: 5}}>{this.state.timeLeft}</Text>
               </View>
             </View>
           </View>
 
-        <View>
+        <View style={{marginTop: 30}}>
           {queueItems}
         </View>
-      </ScrollView>
+      </View>
     )
   }
 }
