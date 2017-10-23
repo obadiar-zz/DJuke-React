@@ -34,8 +34,8 @@ export default class QueueItem extends React.Component {
       visible={this.state.modalVisible}
       onRequestClose={() => {alert("Modal has been closed")}}
       >
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', padding:10}}>
-             <Text>Add to the bid for {title} by {artist}. Remember - the more you bid the more likely your song will be played!</Text>
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', padding:10, backgroundColor:'#2980b9'}}>
+             <Text style={{color: 'white'}}>Add to the bid for <Text style={{fontWeight: 'bold'}}>{title} by {artist}</Text>. Remember - the more you bid the more likely your song will be played!</Text>
              <TextInput
                style={{height: 40, width: 100,paddingLeft: 10,fontSize: 15, borderColor: 'grey', borderWidth: 1, borderRadius: 10,backgroundColor: 'white', marginTop: 20}}
                keyboardType = 'numeric'
@@ -48,7 +48,7 @@ export default class QueueItem extends React.Component {
                this.setState({modalVisible: !this.state.modalVisible});
                submitAddBid(parseInt(this.state.additionalBid), id)
              }}>
-               <Text style={{color: 'blue'}}>Submit</Text>
+               <Text style={{color: 'aquamarine'}}>Submit</Text>
              </TouchableOpacity>
         </View>
     </Modal>

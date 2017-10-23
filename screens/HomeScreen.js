@@ -34,16 +34,22 @@ export default class HomeScreen extends React.Component {
             this.state.socket.emit('CONNECT');
             this.state.socket.on('QUEUE_UPDATED', (data) => {
               console.log("all data", data);
-              this.setState({currentlyPlaying: data.list[data.list.length - 1], queue: data.list});
+              this.setState({currentlyPlaying: data.list[0], queue: data.list});
 
             })
         });
       }
     })
   }
+  componentDidMount() {
+    this.state.socket.on('QUEUE_UPDATED', (data) => {
+      console.log("all data", data);
+      this.setState({currentlyPlaying: data.list[0], queue: data.list});
 
+    })
+  }
   submitUpvote(id) {
-    this.state.socket.emit('UPVOTE_SONG', {id})
+    this.state.socket.emit('UPVOTE_SONG', {id: id})
   }
 
   submitAddBid(amount, id) {

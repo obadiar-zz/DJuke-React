@@ -33,7 +33,7 @@ export default class AddQueueItem extends React.Component {
     this.setState({modalVisible: true, clickedItem: id});
   }
   render() {
-    const {songImage,title, artist, id, duration, submitSongQueue, saveSongAsync} = this.props;
+    const {songImage,title, artist, id, duration, submitSongQueue, saveSongAsync, showAlreadyPlayed} = this.props;
     const minutes = Math.floor(duration / 60000);
     const seconds = ((duration % 60000) / 1000).toFixed(0);
     return(
@@ -44,8 +44,8 @@ export default class AddQueueItem extends React.Component {
       visible={this.state.modalVisible}
       onRequestClose={() => {alert("Modal has been closed.")}}
       >
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', padding:10}}>
-             <Text>Enter a bid for {title} by {artist}. Remember - the more you bid the more likely your song will be played!</Text>
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', padding:10, backgroundColor:'#2980b9'}}>
+             <Text style={{color: 'white'}}>Enter a bid for <Text style={{fontWeight: 'bold'}}>{title} by {artist}</Text>. Remember - the more you bid the more likely your song will be played!</Text>
              <TextInput
                style={{height: 40, width: 100,paddingLeft: 10,fontSize: 15, borderColor: 'grey', borderWidth: 1, borderRadius: 10,backgroundColor: 'white', marginTop: 20}}
                keyboardType = 'numeric'
@@ -56,7 +56,15 @@ export default class AddQueueItem extends React.Component {
 
              <TouchableOpacity style={{marginTop: 15}} onPress={() => {
                this.setState({modalVisible: !this.state.modalVisible});
-
+               console.log("check", songImage, title,artist,id,duration)
+                console.log("func", saveSongAsync);
+                  saveSongAsync({
+                    songImage,
+                    title,
+                    artist,
+                    id,
+                    duration
+                  })
                  submitSongQueue({
                    id,
                    payment: parseInt(this.state.bid),
@@ -64,7 +72,7 @@ export default class AddQueueItem extends React.Component {
                  })
 
              }}>
-               <Text style={{color: 'blue'}}>Submit</Text>
+               <Text style={{color: 'aquamarine'}}>Submit</Text>
              </TouchableOpacity>
 
         </View>

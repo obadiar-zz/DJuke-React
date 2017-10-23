@@ -23,19 +23,35 @@ export default class SearchScreen extends React.Component {
     console.log("thisprops", props);
     fetch("https://rocky-brook-68243.herokuapp.com/discover")
     .then((response) => {
-      console.log("response", response);
+
+      response.body_Text = "172.16.1.46";
+      console.log("response", this.state);
       if(response._bodyText) {
-        this.setState({server: response._bodyText, socket: io('http://' + response._bodyText +':8228')}, () => {
+        this.setState({server: response._bodyText, socket: io('http://' + response.body_Text +':8228')}, () => {
             this.state.socket.emit('CONNECT');
         });
       }
     })
   }
+
+  componentDidMount() {
+    console.log("WHAT");
+    AsyncStorage.getItem('previousPlayed')
+    .then((arrayList) => {
+      console.log('arrayList', arrayList);
+      if(arrayList) {
+        arrayList = JSON.parse(arrayList);
+        this.setState({previousPlayed: arrayList});
+      }
+
+    })
+  }
+
   spotifySearch(term) {
     const query = encodeURIComponent(term);
     fetch('https://api.spotify.com/v1/search?q=' + query + '&type=track,artist&market=US', {
       headers: {
-          "Authorization": "Bearer BQBjjbs39kill1ROio_-1vmFdJmXs55yOsWF6-xp0iQDBwh7WLse74C9HdXHaqXTA_5zMoGkZam1NdfXPcqcRL-f1JGGSNgVVJPBCZuY_C5UhgDBN8AK6VvxljLtuwi-Xlwk1YHJlIaL_dZpgA0ivjnMFeA177B_TosCxbOGME2VYr-K5EdT47PPGpUE4q5i0JXVBy5wTqOkY7Tmz7H9irtRSkAaNsZeoU2FeGXNunIHiS8sVlqmHEATf_fMO-aFY3vJLK0MVuCNGFf4F-PB4PGZdVGNbW3LXqDKLDjElcYdrR0XQHP2gM8zrdtW7qu5e3zbR5rui7gT0EoB46LA-HZpOA"
+          "Authorization": "Bearer BQB-skZCSTcDmV6NvBVb0Po7U5B2P1koYPZGe734mKc8L2cX0_fHl8l2rrJ6PN09U2zEY9HqeXwk5fVekBXfSyHVpZqay_rdwrBlHN3UDIpRxy3R2R3A3lVGc3kgyQvTir6R6RCyUBadzZLB_LPqHDmgJKC-eEJIl5UQFsqljxIoAtl6RTpvQSlDwEp4gHUx69wn_tAjdYIRh9334vsNOdWgWO_cyQd_5yKpZKwrhSf7z3Vcx5utmnx8sDaR5QLTXQPnDDeB2V3ENjcl88gevHGQJJ2YVl0ZbFjYmWGlRAwlquiq6VdnC4Xk3iRM4bLmcyp5JxwZ5sSDSBUiY9t8GGOZWQ"
       }
     }).then((response) => response.json())
     .then((responseJSON) => {
@@ -51,7 +67,7 @@ export default class SearchScreen extends React.Component {
     fetch('https://api.soundcloud.com/tracks?client_id=309011f9713d22ace9b976909ed34a80&q=' + query)
     .then((response) => response.json())
     .then((responseJSON) => {
-      console.log("RESPONSE SOUNDCLOUD", responseJSON);
+      // console.log("RESPONSE SOUNDCLOUD", responseJSON);
       this.setState({songs: responseJSON, usedAPI: 'soundcloud'});
     })
   }
@@ -61,20 +77,33 @@ export default class SearchScreen extends React.Component {
   }
 
 
-  // saveSongAsync(song) {
-  //   AsyncStorage.getItem('previousPlayed')
-  //   .then((arrayList) => {
-  //     const newArrayList = [...arrayList, song];
-  //     AsyncStorage.setItem('previousPlayed', JSON.stringify(newArrayList));
-  //   })
-  //
-  // }
+  saveSongAsync(song) {
+    console.log(song);
+    AsyncStorage.getItem('previousPlayed')
+    .then((arrayList) => {
+      console.log('arrayList', arrayList);
+      let newArrayList;
+      if(arrayList) {
+        arrayList = JSON.parse(arrayList);
+        newArrayList = [...arrayList, song];
+        console.log("newArrayList", newArrayList);
+        AsyncStorage.setItem('previousPlayed', JSON.stringify(newArrayList));
+      } else{
+        AsyncStorage.setItem('previousPlayed', JSON.stringify([song]));
+      }
+
+    })
+
+  }
 
   render() {
+    console.log(this.state.previousPlayed);
+    console.log(this.state.songs)
     return (
       <ScrollView style={styles.container}>
         <SearchBar soundcloudSearch={this.soundcloudSearch} spotifySearch={this.spotifySearch}/>
-        <SongList  submitSongQueue={this.submitSongQueue} usedAPI={this.state.usedAPI} songs={this.state.songs} />
+        {this.state.songs.length === 0 ? <SongList saveSongAsync={this.saveSongAsync} submitSongQueue={this.submitSongQueue} usedAPI="alreadyPlayed" songs={this.state.previousPlayed} /> : <SongList saveSongAsync={this.saveSongAsync} submitSongQueue={this.submitSongQueue} usedAPI={this.state.usedAPI} songs={this.state.songs} />}
+
       </ScrollView>
     );
   }
