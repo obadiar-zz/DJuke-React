@@ -43,7 +43,7 @@ export default class HomeScreen extends React.Component {
   }
   componentDidMount() {
     this.state.socket.on('QUEUE_UPDATED', (data) => {
-      console.log("all data", data);
+      console.log("all data componentDidMount", data);
       this.setState({currentlyPlaying: data.list[0], queue: data.list});
 
     })
@@ -75,7 +75,7 @@ export default class HomeScreen extends React.Component {
           </View>
 
           <View style={styles.getStartedContainer}>
-            {this.state.server ? this.state.currentlyPlaying ? <QueueList submitAddBid={this.submitAddBid} submitUpvote={this.submitUpvote} currentlyPlaying={this.state.currentlyPlaying} queue={this.state.queue}/> : <Text style={styles.getStartedText}> You have connected to a DJuke! The playlist is empty so add to it to start the fun. </Text> : <Text style={{marginTop: 20, color: 'white'}}> Connecting... </Text>}
+            {this.state.server ? this.state.currentlyPlaying ? <QueueList submitAddBid={this.submitAddBid} submitUpvote={this.submitUpvote} currentlyPlaying={this.state.currentlyPlaying} queue={this.state.queue.reverse()}/> : <Text style={styles.getStartedText}> You have connected to a DJuke! The playlist is empty so add to it to start the fun. </Text> : <Text style={{marginTop: 20, color: 'white'}}> Connecting... </Text>}
 
 
 

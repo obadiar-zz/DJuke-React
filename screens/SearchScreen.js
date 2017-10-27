@@ -15,27 +15,32 @@ export default class SearchScreen extends React.Component {
       server: '',
       previousPlayed: [],
       songs: [],
-      usedAPI: 'spotify'
+      usedAPI: 'spotify',
+      token: ''
     }
     this.spotifySearch = this.spotifySearch.bind(this);
     this.soundcloudSearch = this.soundcloudSearch.bind(this);
     this.submitSongQueue = this.submitSongQueue.bind(this);
-    console.log("thisprops", props);
+
     fetch("https://rocky-brook-68243.herokuapp.com/discover")
     .then((response) => {
 
-      response.body_Text = "172.16.1.46";
-      console.log("response", this.state);
+      response.body_Text = "10.2.106.91";
+      console.log("response", response);
       if(response._bodyText) {
-        this.setState({server: response._bodyText, socket: io('http://' + response.body_Text +':8228')}, () => {
+        this.setState({server: response._bodyText, socket: io('http://' + "10.2.106.91" +':8228')}, () => {
             this.state.socket.emit('CONNECT');
+            this.state.socket.emit('RECEIVE_TOKEN');
+            this.state.socket.on('SEND_APP_TOKEN', token => {
+              console.log("TOKEN?", token);
+              this.setState({token});
+            })
         });
       }
     })
   }
 
   componentDidMount() {
-    console.log("WHAT");
     AsyncStorage.getItem('previousPlayed')
     .then((arrayList) => {
       console.log('arrayList', arrayList);
@@ -51,7 +56,7 @@ export default class SearchScreen extends React.Component {
     const query = encodeURIComponent(term);
     fetch('https://api.spotify.com/v1/search?q=' + query + '&type=track,artist&market=US', {
       headers: {
-          "Authorization": "Bearer BQB-skZCSTcDmV6NvBVb0Po7U5B2P1koYPZGe734mKc8L2cX0_fHl8l2rrJ6PN09U2zEY9HqeXwk5fVekBXfSyHVpZqay_rdwrBlHN3UDIpRxy3R2R3A3lVGc3kgyQvTir6R6RCyUBadzZLB_LPqHDmgJKC-eEJIl5UQFsqljxIoAtl6RTpvQSlDwEp4gHUx69wn_tAjdYIRh9334vsNOdWgWO_cyQd_5yKpZKwrhSf7z3Vcx5utmnx8sDaR5QLTXQPnDDeB2V3ENjcl88gevHGQJJ2YVl0ZbFjYmWGlRAwlquiq6VdnC4Xk3iRM4bLmcyp5JxwZ5sSDSBUiY9t8GGOZWQ"
+          "Authorization": "Bearer " + this.state.token
       }
     }).then((response) => response.json())
     .then((responseJSON) => {

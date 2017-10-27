@@ -56,8 +56,7 @@ export default class AddQueueItem extends React.Component {
 
              <TouchableOpacity style={{marginTop: 15}} onPress={() => {
                this.setState({modalVisible: !this.state.modalVisible});
-               console.log("check", songImage, title,artist,id,duration)
-                console.log("func", saveSongAsync);
+               console.log("id", id);
                   saveSongAsync({
                     songImage,
                     title,
