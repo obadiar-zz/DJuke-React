@@ -25,12 +25,12 @@ export default class SearchScreen extends React.Component {
     fetch("https://rocky-brook-68243.herokuapp.com/discover")
     .then((response) => {
 
-      response.body_Text = "10.2.106.91";
-      console.log("response", response);
+
       if(response._bodyText) {
-        this.setState({server: response._bodyText, socket: io('http://' + "10.2.106.91" +':8228')}, () => {
+        this.setState({server: response._bodyText, socket: io('http://' + response._bodyText +':8228')}, () => {
             this.state.socket.emit('CONNECT');
             this.state.socket.emit('RECEIVE_TOKEN');
+
             this.state.socket.on('SEND_APP_TOKEN', token => {
               console.log("TOKEN?", token);
               this.setState({token});
@@ -60,9 +60,6 @@ export default class SearchScreen extends React.Component {
       }
     }).then((response) => response.json())
     .then((responseJSON) => {
-
-        console.log("RESPNOSE", responseJSON);
-        console.log("resp 2", responseJSON["tracks"].items[0].album);
         this.setState({songs: responseJSON["tracks"].items.slice(0,10), usedAPI: 'spotify'});
     })
   }
@@ -78,6 +75,7 @@ export default class SearchScreen extends React.Component {
   }
 
   submitSongQueue(songObj) {
+    console.log("songOBJ", songObj);
     this.state.socket.emit('ADD_SONG', songObj);
   }
 
