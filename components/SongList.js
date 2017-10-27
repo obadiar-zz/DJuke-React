@@ -39,7 +39,7 @@ const SongList = ({songs, usedAPI, submitSongQueue, saveSongAsync}) => {
   return(
 
     <View style={{padding: 15}}>
-      {usedAPI === 'alreadyPlayed' ? <View><Text style={{color: '#ecf0f1', marginTop: 20, fontSize: 14, fontWeight: 'bold'}}>Below is a list of your previously playedSongs</Text></View> : <View><Text style={{fontSize: 14, color: '#ecf0f1'}}> Choose a song below to put into your DJuke queue </Text></View>}
+      {usedAPI === 'alreadyPlayed' ? <View><Text style={{color: '#ecf0f1', fontSize: 14, fontWeight: 'bold'}}>Below is a list of your previously playedSongs</Text></View> : <View><Text style={{fontSize: 14, color: '#ecf0f1', fontWeight:'bold'}}> Choose a song below to put into your DJuke queue </Text></View>}
       {songItems}
     </View>
 
